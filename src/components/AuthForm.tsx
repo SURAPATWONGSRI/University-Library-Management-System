@@ -82,7 +82,7 @@ const AuthForm = <T extends FieldValues>({
                           FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]
                         }
                         {...field}
-                        className="w-full min-h-14 border-none text-base font-bold placeholder:font-normal text-base-100 placeholder:text-base-100 focus-visible:ring-0 focus-visible:shadow-none  !important"
+                        className="w-full min-h-14 border-1  rounded-md bg-secondary/20 text-base font-bold placeholder:font-normal text-base-100 placeholder:text-base-100/70 focus-visible:ring-1 focus-visible:ring-primary"
                       />
                     )}
                   </FormControl>
