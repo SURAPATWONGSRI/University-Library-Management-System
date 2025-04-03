@@ -1,13 +1,27 @@
 "use client";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import { Book } from "lucide-react";
+import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const header = () => {
+const Header = ({ session }: { session?: Session | null }) => {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for component to be mounted before rendering user-specific content
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Only compute initials when mounted to ensure client/server consistency
+  const initials =
+    mounted && session?.user?.name ? getInitials(session.user.name) : "";
+
   return (
     <header className="my-8 flex justify-between items-center">
       <Link href="/" className="group">
@@ -34,10 +48,20 @@ const header = () => {
           </Link>
         </li>
         <li>
+          <Link href="/my-profile">
+            <Avatar className="h-9 w-9 transition-all hover:scale-110">
+              <AvatarFallback className="text-muted-foreground bg-secondary text-xs">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+        </li>
+        <li>
           <ModeToggle />
         </li>
       </ul>
     </header>
   );
 };
-export default header;
+
+export default Header;

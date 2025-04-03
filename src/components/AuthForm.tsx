@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react"; // Import Loader2 icon from lucide-react
+import { useState } from "react";
 import {
   DefaultValues,
   FieldValues,
@@ -23,6 +25,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import ImageUpload from "./ImageUpload";
 
 interface Props<T extends FieldValues> {
@@ -38,14 +42,38 @@ const AuthForm = <T extends FieldValues>({
   defaultValues,
   onSubmit,
 }: Props<T>) => {
+  const router = useRouter();
   const isSignIn = type === "SIGN_IN";
+  const [isLoading, setIsLoading] = useState(false);
   const form: UseFormReturn<T> = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
   // 2. Define a submit handler.
-  const handleSubmit: SubmitHandler<T> = async (data) => {};
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    setIsLoading(true);
+    try {
+      const result = await onSubmit(data);
+
+      if (result.success) {
+        router.push("/");
+        toast.success("Success", {
+          description: isSignIn
+            ? "You have successfully signed in"
+            : "You have successfully signed up",
+        });
+      } else {
+        toast.error(`Error ${isSignIn ? "signing In" : "signing Up"}`, {
+          description: result.error ?? "An error occurred",
+        });
+      }
+    } catch (error) {
+      toast.error("An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -93,8 +121,22 @@ const AuthForm = <T extends FieldValues>({
             />
           ))}
 
-          <Button type="submit" className="btn-primary w-full" size={"lg"}>
-            {isSignIn ? "Sign In" : "Sign Up"}
+          <Button
+            type="submit"
+            className="btn-primary w-full"
+            size={"lg"}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                {isSignIn ? "Signing In..." : "Signing Up..."}
+              </span>
+            ) : isSignIn ? (
+              "Sign In"
+            ) : (
+              "Sign Up"
+            )}
           </Button>
         </form>
       </Form>

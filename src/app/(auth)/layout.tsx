@@ -2,10 +2,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { ReactNode } from "react";
 // import { cn } from "@/lib/utils";
+import { auth } from "@/auth";
 import { BookOpen } from "lucide-react";
+import { redirect } from "next/navigation";
 // import Link from "next/link";
 
-const layout = ({ children }: { children: ReactNode }) => {
+const layout = async ({ children }: { children: ReactNode }) => {
+  const session = await auth();
+  if (session) redirect("/");
   return (
     <main className="relative flex flex-col-reverse text-base sm:flex-row">
       <section className="my-auto flex h-full min-h-screen flex-1 items-center px-5 py-8">
