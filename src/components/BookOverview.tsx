@@ -1,19 +1,40 @@
+import { db } from "@/database/drizzle";
+import { users } from "@/database/schema";
+import { eq } from "drizzle-orm";
 import { BookOpen } from "lucide-react";
 import Image from "next/image";
 import BookCover from "./BookCover";
 import { Button } from "./ui/button";
 
-const BookOverview = ({
+interface Props extends Book {
+  userId: string;
+}
+
+const BookOverview = async ({
   title,
   author,
   genre,
   rating,
-  total_copies,
-  available_copies,
+  totalCopies,
+  availableCopies,
   description,
-  color,
-  cover,
-}: Book) => {
+  coverColor,
+  coverUrl,
+  userId,
+}: Props) => {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  const borrowingEligibility = {
+    isEligible: availableCopies > 0 && user?.status === "APPROVED",
+    message:
+      availableCopies <= 0
+        ? "Book is not available"
+        : "You are not eligible to borrow this book",
+  };
   return (
     <section className="flex flex-col-reverse items-center gap-12 sm:gap-32 xl:flex-row xl:gap-8">
       <div className="flex flex-1 flex-col gap-5">
@@ -31,24 +52,31 @@ const BookOverview = ({
 
           <div className="flex flex-row gap-1">
             <Image src="/icons/star.svg" alt="Star" width={20} height={20} />
-            <p>{rating} </p>
+            <p>{rating}/5 </p>
           </div>
         </div>
         <div className="flex flex-row flex-wrap gap-4 mt-1">
           <p>
-            Total Books: <span>{total_copies}</span>
+            Total Books: <span>{totalCopies}</span>
           </p>
 
           <p>
-            Avaliable Books: <span>{available_copies}</span>
+            Avaliable Books: <span>{availableCopies}</span>
           </p>
         </div>
         <p className="mt-2 text-justify text-xl font-light text-base-100">
           {description}
         </p>
+        {/* {user && (
+          <BorrowBook
+            bookId={id}
+            userId={userId}
+            borrowingEligibility={borrowingEligibility}
+          />
+        )} */}
         <Button className="mt-4 min-h-14 w-fit bg-primary text-dark-100 hover:bg-primary/90 max-md:w-full !important">
-          <BookOpen className="h-5 w-5 text-white" />
-          <p className="text-white text-xl">Borrow</p>
+          <BookOpen className="h-5 w-5 text-white dark:text-zinc-950" />
+          <p className="text-white dark:text-zinc-950 text-xl">Borrow</p>
         </Button>
       </div>
       <div className="flex flex-1 relative justify-center">
@@ -56,11 +84,15 @@ const BookOverview = ({
           <BookCover
             variant="wide"
             className="z-10"
-            coverColor={color}
-            coverImage={cover}
+            coverColor={coverColor}
+            coverImage={coverUrl}
           />
           <div className="absolute left-16 top-10 rotate-12 opacity-40">
-            <BookCover variant="hide" coverColor={color} coverImage={cover} />
+            <BookCover
+              variant="hide"
+              coverColor={coverColor}
+              coverImage={coverUrl}
+            />
           </div>
         </div>
       </div>

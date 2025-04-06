@@ -10,6 +10,7 @@ const page = () => (
     defaultValues={{
       email: "",
       password: "",
+      rePassword: "",
       fullName: "",
       universityId: 0,
       universityCard: "",

@@ -1,3 +1,11 @@
+import {
+  BookMarked,
+  House,
+  LibraryBig,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
+
 export const navigationLinks = [
   {
     href: "/library",
@@ -14,27 +22,27 @@ export const navigationLinks = [
 
 export const adminSideBarLinks = [
   {
-    img: "/icons/admin/home.svg",
+    icon: House,
     route: "/admin",
     text: "Home",
   },
   {
-    img: "/icons/admin/users.svg",
+    icon: UsersRound,
     route: "/admin/users",
     text: "All Users",
   },
   {
-    img: "/icons/admin/book.svg",
+    icon: LibraryBig,
     route: "/admin/books",
     text: "All Books",
   },
   {
-    img: "/icons/admin/bookmark.svg",
+    icon: BookMarked,
     route: "/admin/book-requests",
     text: "Borrow Requests",
   },
   {
-    img: "/icons/admin/user.svg",
+    icon: UserRound,
     route: "/admin/account-requests",
     text: "Account Requests",
   },
@@ -45,6 +53,7 @@ export const FIELD_NAMES = {
   email: "Email",
   universityId: "University ID Number",
   password: "Password",
+  rePassword: "Confirm Password",
   universityCard: "Upload Your University ID Card",
 };
 
@@ -53,6 +62,7 @@ export const FIELD_TYPES = {
   email: "email",
   universityId: "number",
   password: "password",
+  rePassword: "password",
 };
 
 export const sampleBooks = [

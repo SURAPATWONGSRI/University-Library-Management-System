@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react"; // Import Loader2 icon from lucide-react
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DefaultValues,
   FieldValues,
@@ -27,7 +27,7 @@ import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import ImageUpload from "./ImageUpload";
+import FileUpload from "./FileUpload";
 
 interface Props<T extends FieldValues> {
   schema: ZodType<T>;
@@ -48,7 +48,24 @@ const AuthForm = <T extends FieldValues>({
   const form: UseFormReturn<T> = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
+    mode: "onChange", // Enable validation on change
   });
+
+  // Watch password fields for real-time validation
+  const password = form.watch("password" as Path<T>);
+  const rePassword = form.watch("rePassword" as Path<T>);
+
+  // Update validation state when passwords change
+  useEffect(() => {
+    if (!isSignIn && password && rePassword && password !== rePassword) {
+      form.setError("rePassword" as Path<T>, {
+        type: "manual",
+        message: "Passwords do not match",
+      });
+    } else if (!isSignIn && rePassword) {
+      form.clearErrors("rePassword" as Path<T>);
+    }
+  }, [password, rePassword, form, isSignIn]);
 
   // 2. Define a submit handler.
   const handleSubmit: SubmitHandler<T> = async (data) => {
@@ -75,6 +92,13 @@ const AuthForm = <T extends FieldValues>({
     }
   };
 
+  // Filter fields based on form type
+  const fieldsToRender = Object.keys(defaultValues).filter((field) => {
+    // Only show rePassword field on SIGN_UP forms
+    if (field === "rePassword" && isSignIn) return false;
+    return true;
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold text-base-100">
@@ -90,7 +114,7 @@ const AuthForm = <T extends FieldValues>({
           onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-6 w-full "
         >
-          {Object.keys(defaultValues).map((field) => (
+          {fieldsToRender.map((field) => (
             <FormField
               key={field}
               control={form.control}
@@ -102,7 +126,14 @@ const AuthForm = <T extends FieldValues>({
                   </FormLabel>
                   <FormControl>
                     {field.name === "universityCard" ? (
-                      <ImageUpload onFileChange={field.onChange} />
+                      <FileUpload
+                        type="image"
+                        accept="image/*"
+                        placeholder="Upload Your ID"
+                        folder="ids"
+                        variant="dark"
+                        onFileChange={field.onChange}
+                      />
                     ) : (
                       <Input
                         required

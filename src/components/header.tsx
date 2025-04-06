@@ -49,7 +49,7 @@ const Header = ({ session }: { session?: Session | null }) => {
         </li>
         <li>
           <Link href="/my-profile">
-            <Avatar className="h-9 w-9 transition-all hover:scale-110">
+            <Avatar className="h-10 w-10 transition-all hover:scale-110">
               <AvatarFallback className="text-muted-foreground bg-secondary text-xs">
                 {initials}
               </AvatarFallback>
