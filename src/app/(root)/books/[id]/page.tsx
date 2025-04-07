@@ -32,11 +32,11 @@ const page = async ({
       <div className="lg:mt-36 mt-16 mb-20 flex flex-col gap-16 lg:flex-row">
         <div className="flex-[1.5]">
           <section className="flex flex-col gap-7">
-            <h3 className="text-3xl">Video</h3>
+            <h3 className="text-3xl font-semibold">Video</h3>
             <BookVideo videoUrl={bookDetails.videoUrl} />
           </section>
           <section className="mt-10 flex flex-col gap-7">
-            <h3>Summary</h3>
+            <h3 className="text-3xl font-semibold">Summary</h3>
 
             <div className="space-y-5 text-xl text-light-100">
               {bookDetails.summary.split("\n").map((line, i) => (
