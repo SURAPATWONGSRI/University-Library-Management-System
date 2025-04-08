@@ -1,6 +1,5 @@
 import { signOut } from "@/auth";
 import BookList from "@/components/BookList";
-import { Button } from "@/components/ui/button";
 import { sampleBooks } from "@/constants";
 
 const page = () => {
@@ -14,7 +13,7 @@ const page = () => {
         }}
         className="mb-10"
       >
-        <Button>Logout</Button>
+        {/* <Button>Logout</Button> */}
       </form>
 
       <BookList title="Borrowed Books" books={sampleBooks} />

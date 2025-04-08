@@ -61,15 +61,16 @@ export const { POST } = serve<InitialData>(async (context) => {
           message: `Hey ${fullName} We miss you`,
         });
       });
-    } else if (state === "active") {
-      await context.run("send-email-active", async () => {
-        await sendEmail({
-          email,
-          subject: "Welcome back",
-          message: `Welcome back ${fullName}!`,
-        });
-      });
     }
+    // else if (state === "active") {
+    //   await context.run("send-email-active", async () => {
+    //     await sendEmail({
+    //       email,
+    //       subject: "Welcome back",
+    //       message: `Welcome back ${fullName}!`,
+    //     });
+    //   });
+    // }
 
     await context.sleep("wait-for-1-month", 60 * 60 * 24 * 30);
   }

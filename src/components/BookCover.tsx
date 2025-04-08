@@ -55,7 +55,6 @@ const BookCover = ({
           alt="Book Cover"
           fill
           className="object-fill rounded-sm"
-          loading="lazy"
           lqip={{ active: true }}
         />
       </div>

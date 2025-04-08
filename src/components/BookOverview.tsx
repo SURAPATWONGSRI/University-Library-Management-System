@@ -1,10 +1,9 @@
 import { db } from "@/database/drizzle";
 import { users } from "@/database/schema";
 import { eq } from "drizzle-orm";
-import { BookOpen } from "lucide-react";
 import Image from "next/image";
 import BookCover from "./BookCover";
-import { Button } from "./ui/button";
+import BorrowBook from "./BorrowBook";
 
 interface Props extends Book {
   userId: string;
@@ -20,6 +19,7 @@ const BookOverview = async ({
   description,
   coverColor,
   coverUrl,
+  id,
   userId,
 }: Props) => {
   const [user] = await db
@@ -67,17 +67,13 @@ const BookOverview = async ({
         <p className="mt-2 text-justify text-xl font-light text-base-100">
           {description}
         </p>
-        {/* {user && (
+        {user && (
           <BorrowBook
             bookId={id}
             userId={userId}
             borrowingEligibility={borrowingEligibility}
           />
-        )} */}
-        <Button className="mt-4 min-h-14 w-fit bg-primary text-dark-100 hover:bg-primary/90 max-md:w-full !important">
-          <BookOpen className="h-5 w-5 text-white dark:text-zinc-950" />
-          <p className="text-white dark:text-zinc-950 text-xl">Borrow</p>
-        </Button>
+        )}
       </div>
       <div className="flex flex-1 relative justify-center">
         <div className="relative">
